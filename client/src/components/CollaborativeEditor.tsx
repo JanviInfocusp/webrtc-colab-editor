@@ -23,7 +23,6 @@ import * as Y from 'yjs';
 import { UndoManager } from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
 import { yCollab } from 'y-codemirror.next';
-import './CollaborativeEditor.css';
 
 /**
  * Collaborative editor component using CodeMirror 6 and Yjs
@@ -183,20 +182,28 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
   }, [roomName, userName]);
 
   return (
-    <div>
+    <div className="flex flex-col h-full bg-gray-800 rounded-lg shadow-lg">
       {/* Online users indicator */}
-      {onlineUsers.length > 0 && (
-        <div className="online-users">
-          <span className="online-indicator">●</span>
-          {onlineUsers.length} user{onlineUsers.length > 1 ? 's' : ''} online
-          {onlineUsers.length <= 3 && `: ${onlineUsers.join(', ')}`}
-        </div>
-      )}
+      <div className="p-3 bg-gray-700 rounded-t-lg">
+        {onlineUsers.length > 0 ? (
+          <div className="flex items-center text-green-400">
+            <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+            {onlineUsers.length} user{onlineUsers.length > 1 ? 's' : ''} online
+            {onlineUsers.length <= 3 && (
+              <span className="ml-2 text-gray-400">
+                ({onlineUsers.join(', ')})
+              </span>
+            )}
+          </div>
+        ) : (
+          <div className="text-gray-400">No other users online</div>
+        )}
+      </div>
 
       {/* Editor container */}
       <div
         ref={editorRef}
-        className="collaborative-editor-container"
+        className="flex-grow rounded-b-lg overflow-hidden"
       />
     </div>
   );
