@@ -31,14 +31,15 @@ import { yCollab } from 'y-codemirror.next';
 interface CollaborativeEditorProps {
   roomName?: string; // Room name for collaboration session
   userName?: string; // Current user's display name
+  setOnlineUsers: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
   roomName = 'default-room',
-  userName = 'Anonymous'
+  userName = 'Anonymous',
+  setOnlineUsers
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
-  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
   useEffect(() => {
     if (!editorRef.current) return;
@@ -179,27 +180,10 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
       provider.destroy();
       ydoc.destroy();
     };
-  }, [roomName, userName]);
+  }, [roomName, userName, setOnlineUsers]);
 
   return (
     <div className="flex flex-col h-full bg-gray-800 rounded-lg shadow-lg">
-      {/* Online users indicator */}
-      <div className="p-3 bg-gray-700 rounded-t-lg">
-        {onlineUsers.length > 0 ? (
-          <div className="flex items-center text-green-400">
-            <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
-            {onlineUsers.length} user{onlineUsers.length > 1 ? 's' : ''} online
-            {onlineUsers.length <= 3 && (
-              <span className="ml-2 text-gray-400">
-                ({onlineUsers.join(', ')})
-              </span>
-            )}
-          </div>
-        ) : (
-          <div className="text-gray-400">No other users online</div>
-        )}
-      </div>
-
       {/* Editor container */}
       <div
         ref={editorRef}
