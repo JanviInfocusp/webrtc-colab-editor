@@ -4,7 +4,15 @@ import OnlineUsers from './components/OnlineUsers';
 
 function App() {
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
-  const [userName] = useState(`User-${Math.floor(Math.random() * 1000)}`);
+  const [userName] = useState(() => {
+    const storedUserName = sessionStorage.getItem('userName');
+    if (storedUserName) {
+      return storedUserName;
+    }
+    const newUserName = `User-${Math.floor(Math.random() * 1000)}`;
+    sessionStorage.setItem('userName', newUserName);
+    return newUserName;
+  });
   return (
     <div className="bg-gray-900 min-h-screen text-white flex flex-col items-center">
       <header className="w-full py-6 px-4 bg-gray-800 shadow-md flex justify-between items-center">
