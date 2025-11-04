@@ -22,12 +22,11 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ userId }) => {
   };
 
   const userColor = `#${intToRGB(hashCode(userId))}`;
-  const initial = userId.charAt(0).toUpperCase();
+  const initial = userId.charAt(5).toUpperCase();
 
   return (
     <div
       className="group relative inline-block"
-      title={userId}
     >
       <div
         className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
@@ -35,7 +34,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ userId }) => {
       >
         {initial}
       </div>
-      <div className="absolute bottom-full mb-2 w-max px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="absolute top-full mt-2 w-max px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity">
         {userId}
       </div>
     </div>

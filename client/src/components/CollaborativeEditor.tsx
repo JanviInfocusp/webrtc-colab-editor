@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { EditorView, keymap, lineNumbers, highlightActiveLineGutter } from '@codemirror/view';
 import { EditorState } from '@codemirror/state';
 import { defaultKeymap, indentWithTab } from '@codemirror/commands';
@@ -85,8 +85,8 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
       { tag: tags.string, color: '#a31515' },
       { tag: tags.number, color: '#098658' },
       { tag: tags.operator, color: '#000000' },
-      { tag: tags.variableName, color: '#001080' },
-      { tag: tags.propertyName, color: '#001080' },
+      { tag: tags.variableName, color: '#fff' },
+      { tag: tags.propertyName, color: '#fff' },
       { tag: tags.function(tags.variableName), color: '#795E26' },
     ]);
 
