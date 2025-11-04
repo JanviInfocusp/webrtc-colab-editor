@@ -183,7 +183,7 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
   }, [roomName, userName, setOnlineUsers]);
 
   return (
-    <div className="flex flex-col h-full bg-gray-800 rounded-lg shadow-lg">
+    <div className="flex flex-col flex-grow bg-gray-800 rounded-lg shadow-lg">
       {/* Editor container */}
       <div
         ref={editorRef}
