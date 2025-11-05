@@ -30,12 +30,14 @@ import { yCollab } from 'y-codemirror.next';
  */
 interface CollaborativeEditorProps {
   roomName?: string; // Room name for collaboration session
+  userId: string; // Add userId to props
   userName?: string; // Current user's display name
   setOnlineUsers: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
   roomName = 'default-room',
+  userId,
   userName = 'Anonymous',
   setOnlineUsers
 }) => {
@@ -50,7 +52,7 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
 
     // Set up WebSocket provider with user awareness
     const provider = new WebsocketProvider(
-      'ws://localhost:1234',
+      `ws://localhost:1234?userId=${userId}`,
       roomName,
       ydoc
     );
@@ -58,16 +60,17 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
     // Set current user info in awareness
     provider.awareness.setLocalStateField('user', {
       name: userName,
-      color: getRandomColor()
+      color: getRandomColor(),
+      userId
     });
 
     // Track other online users
     const updateUsers = () => {
       const states = Array.from(provider.awareness.getStates().values());
       const users = states
-        .map((state: any) => state.user?.name)
-        .filter((name): name is string => !!name && name !== userName);
-      setOnlineUsers(users);
+        .map((state: any) => state.user)
+        .filter((user): user is { name: string; userId: string } => !!user && user.userId !== userId);
+      setOnlineUsers(users.map(user => user.name));
     };
 
     provider.awareness.on('change', updateUsers);
