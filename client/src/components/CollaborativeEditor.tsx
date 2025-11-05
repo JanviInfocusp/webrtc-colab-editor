@@ -52,9 +52,10 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
 
     // Set up WebSocket provider with user awareness
     const provider = new WebsocketProvider(
-      `ws://localhost:1234?userId=${userId}`,
+      'ws://localhost:1234',
       roomName,
-      ydoc
+      ydoc,
+      { params: { userId } }
     );
 
     // Set current user info in awareness

@@ -1,5 +1,0 @@
-
-> colab-editor-server@1.0.0 start
-> node server.js
-
-Starting Yjs WebSocket server on port 1234...
