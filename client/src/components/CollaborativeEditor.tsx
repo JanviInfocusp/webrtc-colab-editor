@@ -21,8 +21,8 @@ import {
 import { tags } from '@lezer/highlight';
 import * as Y from 'yjs';
 import { UndoManager } from 'yjs';
-import { WebsocketProvider } from 'y-websocket';
 import { yCollab } from 'y-codemirror.next';
+import { WebrtcProvider } from 'y-webrtc';
 
 /**
  * Collaborative editor component using CodeMirror 6 and Yjs
@@ -50,13 +50,7 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
     const ydoc = new Y.Doc();
     const ytext = ydoc.getText('codemirror');
 
-    // Set up WebSocket provider with user awareness
-    const provider = new WebsocketProvider(
-      'ws://localhost:1234',
-      roomName,
-      ydoc,
-      { params: { userId } }
-    );
+    const provider = new WebrtcProvider(roomName, ydoc);
 
     // Set current user info in awareness
     provider.awareness.setLocalStateField('user', {
@@ -184,7 +178,7 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
       provider.destroy();
       ydoc.destroy();
     };
-  }, [roomName, userName, setOnlineUsers]);
+  }, [roomName, userId, userName, setOnlineUsers]);
 
   return (
     <div className="flex flex-col flex-grow bg-gray-800 rounded-lg shadow-lg">
