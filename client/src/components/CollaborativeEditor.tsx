@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { toast } from 'react-toastify';
 import { EditorView, keymap, lineNumbers, highlightActiveLineGutter } from '@codemirror/view';
 import { EditorState } from '@codemirror/state';
 import { defaultKeymap, indentWithTab } from '@codemirror/commands';
@@ -32,7 +33,7 @@ interface CollaborativeEditorProps {
   roomName?: string; // Room name for collaboration session
   userId: string; // Add userId to props
   userName?: string; // Current user's display name
-  setOnlineUsers: React.Dispatch<React.SetStateAction<string[]>>;
+  setOnlineUsers: React.Dispatch<React.SetStateAction<{ userId: string; name: string }[]>>;
 }
 
 const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
@@ -42,6 +43,7 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
   setOnlineUsers
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
+  const prevUsersRef = useRef<string[]>([]);
 
   useEffect(() => {
     if (!editorRef.current) return;
@@ -64,8 +66,25 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
       const states = Array.from(provider.awareness.getStates().values());
       const users = states
         .map((state: any) => state.user)
-        .filter((user): user is { name: string; userId: string } => !!user && user.userId !== userId);
-      setOnlineUsers(users.map(user => user.name));
+        .filter((user): user is { name: string; userId: string } => !!user && !!user.name && user.userId !== userId);
+
+      const userNames = users.map(user => user.name);
+      const prevUserNames = prevUsersRef.current;
+
+      userNames.forEach(name => {
+        if (!prevUserNames.includes(name)) {
+          toast.info(`${name} joined`);
+        }
+      });
+
+      prevUserNames.forEach(name => {
+        if (!userNames.includes(name)) {
+          toast.info(`${name} left`);
+        }
+      });
+
+      prevUsersRef.current = userNames;
+      setOnlineUsers(users.map(user => ({ userId: user.userId, name: user.name })));
     };
 
     provider.awareness.on('change', updateUsers);
@@ -83,8 +102,8 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
       { tag: tags.string, color: '#a31515' },
       { tag: tags.number, color: '#098658' },
       { tag: tags.operator, color: '#000000' },
-      { tag: tags.variableName, color: '#fff' },
-      { tag: tags.propertyName, color: '#fff' },
+      { tag: tags.variableName, color: '#000' },
+      { tag: tags.propertyName, color: '#000' },
       { tag: tags.function(tags.variableName), color: '#795E26' },
     ]);
 
@@ -181,7 +200,7 @@ const CollaborativeEditor: React.FC<CollaborativeEditorProps> = ({
   }, [roomName, userId, userName, setOnlineUsers]);
 
   return (
-    <div className="flex flex-col flex-grow bg-gray-800 rounded-lg shadow-lg">
+    <div className="flex flex-col flex-grow bg-gray-100 rounded-lg shadow-lg">
       {/* Editor container */}
       <div
         ref={editorRef}
